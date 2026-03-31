@@ -1,0 +1,85 @@
+import streamlit as st
+
+st.set_page_config(page_title="Creative Prompt Generator", page_icon="🎥", layout="centered")
+st.title("🎬 Creative Prompt Generator")
+st.markdown("### Turn any **title** into perfect prompts for Movies, Anime, History & Stories")
+
+# Sidebar for type selection
+st.sidebar.header("Choose Output Type")
+content_type = st.sidebar.selectbox(
+    "What do you want to generate?",
+    ["Auto Detect", "Movie Script / Film", "Anime / Manga", "Historical Fiction", "Short Story", "Full Novel Chapter", "Anime Character + Story", "Movie Trailer Prompt", "Alternate History"]
+)
+
+title = st.text_input("Enter your Title / Topic", placeholder="e.g. The Silent Warrior of Sokoto", help="Just type the title!")
+
+if st.button("Generate Optimized Prompts", type="primary"):
+    if not title.strip():
+        st.error("Please enter a title!")
+    else:
+        with st.spinner("Crafting powerful prompts..."):
+            # Movie Prompt
+            movie_prompt = f"""Act as a professional Hollywood screenwriter with experience in blockbuster films.
+
+Title: "{title}"
+
+Create a complete, ready-to-use prompt for ChatGPT that will generate:
+- A compelling logline
+- Full 3-act story structure
+- Key characters with arcs
+- Major plot points and twists
+- Sample dialogue scenes
+
+Make the prompt highly detailed, cinematic, and optimized for maximum quality output. Include instructions for visual style, tone, and pacing."""
+
+            # Anime Prompt
+            anime_prompt = f"""Act as a veteran anime scriptwriter and character designer (Studio Ghibli + Shonen Jump style).
+
+Title: "{title}"
+
+Generate an optimized prompt for ChatGPT to create:
+- Main character (appearance, personality, powers/backstory)
+- Supporting cast
+- Episode or season arc with emotional highs and action
+- Anime-specific tropes done creatively
+- Detailed visual descriptions suitable for AI image generators
+
+Make it exciting, emotional, and true to anime storytelling."""
+
+            # Historical Prompt
+            history_prompt = f"""Act as a historian and historical fiction author with deep knowledge of world history, especially African history where relevant.
+
+Title: "{title}"
+
+Create the best prompt for ChatGPT to generate a historically rich story or novel including:
+- Accurate historical context and period details
+- Real or plausible events, culture, clothing, dialogue style
+- Compelling fictional characters interacting with history
+- Emotional depth and conflicts
+
+Emphasize authenticity while allowing creative freedom."""
+
+            st.success("✅ Prompts Generated!")
+
+            tab1, tab2, tab3, tab4 = st.tabs(["🎥 Movie", "🌸 Anime", "📜 Historical", "📖 General Story"])
+
+            with tab1:
+                st.text_area("Movie / Film Prompt (copy this)", movie_prompt, height=300)
+                if st.button("Copy Movie Prompt", key="copy1"):
+                    st.code(movie_prompt)  # Streamlit handles copy via manual for now
+
+            with tab2:
+                st.text_area("Anime Prompt (copy this)", anime_prompt, height=300)
+
+            with tab3:
+                st.text_area("Historical Fiction Prompt", history_prompt, height=300)
+
+            with tab4:
+                general_prompt = f"""Act as a master storyteller. 
+Title: "{title}"
+Write a highly detailed prompt that will make ChatGPT generate an engaging {content_type.lower()} story with strong characters, plot twists, and vivid descriptions."""
+                st.text_area("General Story Prompt", general_prompt, height=300)
+
+            st.info("💡 Tip: Copy any prompt above and paste directly into ChatGPT, Grok, or Claude for best results.")
+
+st.caption("Built for creative writers | Movies • Anime • History • Stories")

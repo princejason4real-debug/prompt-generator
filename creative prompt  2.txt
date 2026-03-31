@@ -1,0 +1,118 @@
+import tkinter as tk
+from tkinter import ttk, messagebox, scrolledtext
+import pyperclip
+
+def generate_prompt(title, prompt_type):
+    if not title.strip():
+        return "Please enter a title."
+
+    base = f'Act as a world-class expert in {prompt_type.lower()}.'
+
+    if prompt_type == "Movie / Film":
+        return f"""{base}
+
+Title: "{title}"
+
+Create a highly detailed prompt for ChatGPT that generates:
+- Compelling logline
+- Full 3-act story structure with twists
+- Main characters with strong arcs
+- Key scenes and cinematic descriptions
+- Tone, pacing, and visual style suggestions
+
+Make the prompt optimized for maximum quality cinematic output."""
+
+    elif prompt_type == "Anime / Manga":
+        return f"""{base}
+
+Title: "{title}"
+
+Generate an optimized prompt for creating:
+- Main protagonist (design, personality, powers/backstory)
+- Supporting characters and antagonists
+- Episode/season arc with emotional depth and action
+- Anime-style tropes used creatively
+- Vivid visual descriptions perfect for AI image generators
+
+Make it exciting, emotional, and authentic to anime storytelling."""
+
+    elif prompt_type == "Historical Fiction":
+        return f"""{base}
+
+Title: "{title}"
+
+Create the best prompt for a rich historical story including:
+- Accurate historical context and period details (culture, clothing, language)
+- Real or believable events
+- Compelling fictional characters interacting with history
+- Emotional conflicts and authentic dialogue
+
+Balance historical accuracy with engaging fiction."""
+
+    else:  # General Story / Novel
+        return f"""{base}
+
+Title: "{title}"
+
+Write a powerful prompt that makes ChatGPT generate an engaging {prompt_type.lower()} with:
+- Strong characters and development
+- Gripping plot with twists
+- Vivid descriptions and atmosphere
+- Satisfying beginning, middle, and end
+
+Optimize for high-quality creative writing."""
+
+# ================== GUI ==================
+root = tk.Tk()
+root.title("Creative Prompt Generator - Movies, Anime, History")
+root.geometry("900x700")
+root.configure(bg="#f0f0f0")
+
+tk.Label(root, text="🎬 Creative Prompt Generator", font=("Arial", 18, "bold"), bg="#f0f0f0").pack(pady=15)
+
+tk.Label(root, text="Enter Title / Topic:", font=("Arial", 11), bg="#f0f0f0").pack(anchor="w", padx=30)
+
+entry = tk.Entry(root, font=("Arial", 12), width=80)
+entry.pack(pady=10, padx=30, ipady=8)
+
+tk.Label(root, text="Choose Type:", font=("Arial", 11), bg="#f0f0f0").pack(anchor="w", padx=30)
+
+types = ["Movie / Film", "Anime / Manga", "Historical Fiction", "Short Story / Novel Chapter"]
+combo = ttk.Combobox(root, values=types, font=("Arial", 11), state="readonly", width=40)
+combo.set("Movie / Film")
+combo.pack(pady=10, padx=30)
+
+def on_generate():
+    title = entry.get().strip()
+    ptype = combo.get()
+    
+    if not title:
+        messagebox.showwarning("Missing Title", "Please enter a title!")
+        return
+    
+    optimized = generate_prompt(title, ptype)
+    
+    result_text.delete("1.0", tk.END)
+    result_text.insert(tk.END, optimized)
+    
+    try:
+        pyperclip.copy(optimized)
+        status.config(text="✅ Prompt generated and copied to clipboard!", fg="green")
+    except:
+        status.config(text="✅ Prompt generated (copy manually)", fg="blue")
+
+generate_btn = tk.Button(root, text="Generate Prompt", font=("Arial", 12, "bold"), 
+                         bg="#4CAF50", fg="white", height=2, command=on_generate)
+generate_btn.pack(pady=20)
+
+tk.Label(root, text="Generated Prompt (ready for ChatGPT):", font=("Arial", 11), bg="#f0f0f0").pack(anchor="w", padx=30)
+
+result_text = scrolledtext.ScrolledText(root, font=("Consolas", 10), height=18, wrap=tk.WORD, bg="#ffffff")
+result_text.pack(padx=30, pady=10, fill="both", expand=True)
+
+status = tk.Label(root, text="", fg="green", bg="#f0f0f0", font=("Arial", 10))
+status.pack(pady=5)
+
+tk.Label(root, text="Tip: Paste the prompt directly into ChatGPT or Grok", fg="gray", bg="#f0f0f0").pack()
+
+root.mainloop()
